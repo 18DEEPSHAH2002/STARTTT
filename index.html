@@ -1,189 +1,133 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Curtain opener</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Red Cross Ludhiana Inauguration</title>
 <style>
-  /* Basic reset */
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html,body { height: 100%; }
+  * {margin:0; padding:0; box-sizing:border-box;}
 
   body {
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    background: #0f172a; /* page background seen after panels open */
-    color: #fff;
-    overflow: hidden; /* keep full-screen effect */
-  }
-
-  /* Container to center the button */
-  .stage {
-    position: relative;
-    width: 100%;
-    height: 100vh;
-    display: grid;
-    place-items: center;
+    height:100vh;
+    overflow:hidden;
+    font-family: "Segoe UI", sans-serif;
+    background:#0f172a;
+    color:#fff;
   }
 
   /* Curtain panels */
-  .panel {
-    position: fixed;
-    top: 0;
-    height: 100vh;
-    width: 50%;
-    z-index: 40;
-    background: linear-gradient(180deg, #111827 0%, #0b1220 100%);
-    box-shadow: 0 0 40px rgba(2,6,23,0.6);
-    /* Create subtle texture using repeating gradient */
-    background-image:
-      linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0) 100%),
-      linear-gradient(90deg, rgba(255,255,255,0.01) 0%, rgba(0,0,0,0) 100%);
+  .curtain {
+    position:fixed;
+    top:0;
+    width:50%;
+    height:100%;
+    background: linear-gradient(180deg, #b91c1c, #7f1d1d);
+    z-index:10;
+    transition: transform 1.2s ease-in-out;
+  }
+  .left-curtain { left:0; transform:translateX(0); }
+  .right-curtain { right:0; transform:translateX(0); }
+
+  /* When open */
+  .open .left-curtain { transform:translateX(-100%); }
+  .open .right-curtain { transform:translateX(100%); }
+
+  /* Inauguration button (bottom-left) */
+  .inauguration-btn {
+    position:fixed;
+    bottom:30px;
+    left:30px;
+    background:#dc2626;
+    color:#fff;
+    border:none;
+    padding:12px 22px;
+    font-size:16px;
+    border-radius:6px;
+    cursor:pointer;
+    z-index:20;
+    transition:background 0.3s;
+  }
+  .inauguration-btn:hover {
+    background:#ef4444;
   }
 
-  .panel.left  { left: 0;  transform: translateX(0); }
-  .panel.right { right: 0; transform: translateX(0); }
-
-  /* Curtain opening animations */
-  @keyframes openLeft {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(-110%); } /* move fully out of view */
-  }
-  @keyframes openRight {
-    0%   { transform: translateX(0); }
-    100% { transform: translateX(110%); }
+  /* Hidden after clicked */
+  .open .inauguration-btn {
+    display:none;
   }
 
-  /* Button initially hidden; will fade in once panels move */
-  .btn-wrap {
-    position: relative;
-    z-index: 20;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 400ms ease, transform 400ms ease;
-    pointer-events: none;
+  /* Welcome message area */
+  .content {
+    position:relative;
+    z-index:5;
+    text-align:center;
+    top:50%;
+    transform:translateY(-50%);
+    opacity:0;
+    transition:opacity 1s ease-in-out 0.5s;
+  }
+  .open .content {
+    opacity:1;
   }
 
-  .btn {
-    appearance: none;
-    border: 0;
-    padding: 14px 28px;
-    font-size: 18px;
-    border-radius: 10px;
-    cursor: pointer;
-    background: linear-gradient(90deg, #06b6d4, #3b82f6);
-    color: white;
-    box-shadow: 0 6px 20px rgba(59,130,246,0.18), inset 0 -2px 0 rgba(0,0,0,0.08);
-  }
-  .btn:focus { outline: 3px solid rgba(99,102,241,0.25); outline-offset: 4px; }
-
-  /* State classes that get toggled by JS */
-  .panels-opening .panel.left  { animation: openLeft 900ms cubic-bezier(.2,.9,.3,1) forwards; }
-  .panels-opening .panel.right { animation: openRight 900ms cubic-bezier(.2,.9,.3,1) forwards; }
-
-  /* Show button once panels finished (added .revealed class) */
-  .revealed .btn-wrap {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
+  h1 {
+    font-size:2rem;
+    letter-spacing:1px;
+    margin-bottom:20px;
   }
 
-  /* Respect user's reduced motion preference */
-  @media (prefers-reduced-motion: reduce) {
-    .panel { transition: none; animation: none !important; transform: translateX(-110%) !important; }
-    .panel.right { transform: translateX(110%) !important; }
-    .btn-wrap { opacity: 1; transform: none; pointer-events: auto; }
-    body { overflow: auto; }
+  .visit-btn {
+    background:#dc2626;
+    color:#fff;
+    border:none;
+    padding:14px 26px;
+    font-size:17px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:background 0.3s;
+  }
+  .visit-btn:hover {
+    background:#ef4444;
   }
 
-  /* Small responsive tweak */
-  @media (max-width: 520px) {
-    .btn { padding: 12px 18px; font-size: 16px; }
-    .panel { width: 60%; }
+  @media (max-width:600px) {
+    h1 { font-size:1.5rem; }
+    .visit-btn { font-size:15px; padding:12px 22px; }
+    .inauguration-btn { padding:10px 18px; font-size:14px; }
   }
 </style>
 </head>
 <body>
 
-<div class="stage panels-opening" id="stage">
-  <!-- curtain panels -->
-  <div class="panel left" aria-hidden="true"></div>
-  <div class="panel right" aria-hidden="true"></div>
+  <!-- Curtains -->
+  <div class="curtain left-curtain"></div>
+  <div class="curtain right-curtain"></div>
 
-  <!-- center content (only button after animation) -->
-  <div class="btn-wrap" id="btnWrap" aria-hidden="true">
-    <!-- Replace the URL below with your website URL -->
-    <button id="openBtn" class="btn" type="button" aria-label="Open website">
-      Open Website
-    </button>
+  <!-- Inauguration Button -->
+  <button class="inauguration-btn" id="inaugurationBtn">Inauguration</button>
+
+  <!-- Content revealed after curtain opens -->
+  <div class="content" id="content">
+    <h1>WELCOME TO RED CROSS LUDHIANA WEBSITE</h1>
+    <button class="visit-btn" id="visitBtn">Go to Website</button>
   </div>
-</div>
 
 <script>
-(function () {
-  const stage = document.getElementById('stage');
-  const left = document.querySelector('.panel.left');
-  const right = document.querySelector('.panel.right');
-  const btnWrap = document.getElementById('btnWrap');
-  const openBtn = document.getElementById('openBtn');
+  const body = document.body;
+  const inaugurationBtn = document.getElementById('inaugurationBtn');
+  const visitBtn = document.getElementById('visitBtn');
 
-  // URL to open when button is clicked (replace with your own)
-  const targetUrl = 'https://example.com';
+  // Replace with your actual Red Cross Ludhiana website URL
+  const websiteURL = "https://redcrossludhiana.org"; 
 
-  // After both panel animations end, reveal the button and remove panels for accessibility/performance
-  let finished = 0;
-  function onPanelEnd(e) {
-    finished += 1;
-    if (finished >= 2) {
-      // Remove opening class and mark revealed
-      stage.classList.remove('panels-opening');
-      stage.classList.add('revealed');
-
-      // Hide panels from assistive tech and remove from DOM flow
-      left.style.display = 'none';
-      right.style.display = 'none';
-
-      // Make button accessible to screen readers
-      btnWrap.setAttribute('aria-hidden', 'false');
-    }
-  }
-
-  // If animations supported, listen; otherwise reveal immediately
-  if ('onanimationend' in window || typeof AnimationEvent !== 'undefined') {
-    left.addEventListener('animationend', onPanelEnd, { once: true });
-    right.addEventListener('animationend', onPanelEnd, { once: true });
-
-    // Fallback timeout: if animationend doesn't fire (rare), reveal after 1s
-    setTimeout(() => {
-      if (!stage.classList.contains('revealed')) {
-        onPanelEnd();
-        onPanelEnd();
-      }
-    }, 1200);
-  } else {
-    // No animation support -> reveal now
-    left.style.display = 'none';
-    right.style.display = 'none';
-    stage.classList.add('revealed');
-    btnWrap.setAttribute('aria-hidden', 'false');
-  }
-
-  // Button click opens the website
-  openBtn.addEventListener('click', () => {
-    // Choose navigation behavior:
-    // window.location.href = targetUrl; // open in same tab
-    window.open(targetUrl, '_self'); // open in same tab
-    // To open in new tab instead, use: window.open(targetUrl, '_blank', 'noopener');
+  inaugurationBtn.addEventListener('click', () => {
+    body.classList.add('open');  // Opens the curtain
   });
 
-  // Optional: allow Enter/Space to activate when focused
-  openBtn.addEventListener('keydown', (ev) => {
-    if (ev.key === 'Enter' || ev.key === ' ') {
-      ev.preventDefault();
-      openBtn.click();
-    }
+  visitBtn.addEventListener('click', () => {
+    window.open(websiteURL, '_blank'); // Opens website in new tab
   });
-})();
 </script>
+
 </body>
 </html>
